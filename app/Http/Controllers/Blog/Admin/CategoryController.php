@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Blog\Admin;
 
+use App\Http\Requests\BlogCategoryCreateRequest;
 use App\Models\BlogCategory;
-use Illuminate\Http\Request;
+use App\Http\Requests\BlogCategoryUpdateRequest;
 
 class CategoryController extends BaseController
 {
@@ -26,8 +27,11 @@ class CategoryController extends BaseController
      */
     public function create()
     {
-        return view('blog.admin.categories.create');
-        dd(__METHOD__);
+        $item = new BlogCategory();
+        $categoryList = BlogCategory::all();
+
+        return view('blog.admin.categories.edit',
+            compact('item','categoryList'));
     }
 
     /**
@@ -36,9 +40,22 @@ class CategoryController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BlogCategoryCreateRequest $request)
     {
-        dd(__METHOD__);
+        $data = $request->input();
+        if (empty($data['slug'])) {
+            $data['slug'] = str_slug($data['title']);
+        }
+        // Создание в баззу данных категории
+        $item = (new BlogCategory($data))->create($data);
+
+        if ($item) {
+            return redirect()->route('blog.admin.categories.edit',[$item->id])
+                ->with(['success' => 'Успешно сохранено']);
+        } else {
+            return back()->withErrors(['msg' => 'Ощибка сохранения'])
+                ->withInput();
+        }
     }
 
     /**
@@ -74,16 +91,20 @@ class CategoryController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(BlogCategoryUpdateRequest $request, $id)
     {
         $item =BlogCategory::find($id);
         if (empty($item)){
             return back()
-                ->withErrors(['msg' => "Запись id=[{$id} не найдена]"])
+                ->withErrors(['msg' => "К сожалению, запись id={$id} не найдена"])
                 ->withInput();
         }
         $data = $request->all();
-        $result = $item->fill($data)->save();
+        if (empty($data['slug'])) {
+            $data['slug'] = str_slug($data['title']);
+        }
+        $result = $item->update($data);
+
         if ($result){
             return redirect()
                 ->route('blog.admin.categories.edit', $item->id)
@@ -94,7 +115,6 @@ class CategoryController extends BaseController
                 ->withInput();
         }
     }
-
 
     /**
      * Remove the specified resource from storage.

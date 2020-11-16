@@ -5,7 +5,7 @@
         <div>
             <div class="col-md-16m">
                 <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-                    <a class="btn btn-primary" href="{{route('blog.admin.categories.create')}}">Добавить</a>
+                    <a class="btn btn-primary btn-lg" href="{{route('blog.admin.categories.create')}}">Добавить категорию</a>
                 </nav>
                 <div class="card">
                     <div class="card-body">

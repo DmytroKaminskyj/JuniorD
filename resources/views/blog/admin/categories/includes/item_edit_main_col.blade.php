@@ -1,9 +1,15 @@
-@php /** @var \App\Models\BlogCategory $item    */  @endphp
+@php
+    /** @var \App\Models\BlogCategory $item    */
+@endphp
 
 <div class="row justify-content-center">
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
+                <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+                    <a style="text-align: center" class="btn btn-outline-dark" href="{{route('blog.admin.categories.index')}}">Назад</a>
+                    <i class="fab fa-avianex"></i>
+                </nav>
                 <div class="card-title"></div>
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
@@ -49,8 +55,8 @@
                             <textarea name="description"
                                       id="description"
                                       class="form-control"
-                                      rows="10">
-                                {{$item->description}}
+                                      rows="3"
+                                      placeholder="Введите описание"> {{old('descrepption', $item->description)}}
                             </textarea>
                         </div>
                     </div>

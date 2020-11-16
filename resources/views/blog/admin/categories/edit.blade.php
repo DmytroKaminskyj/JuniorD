@@ -2,12 +2,17 @@
 
 @section('content')
     @php
-        /** @var \App\Models\BlogCategory $item    */
+        /** @var \App\Models\BlogCategory  $item    */
     @endphp
 
+    @if($item->exists)
     <form method="POST" action="{{route('blog.admin.categories.update', $item->id)}}">
         @method('PATCH')
-        @csrf
+        @else
+            <form method="POST" action="{{ route('blog.admin.categories.store') }}">
+                @endif
+                @csrf
+                <div class="container">
         @php
         /** @var \Illuminate\Support\ViewErrorBag $errors */
         @endphp
@@ -18,7 +23,7 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">x</span>
                         </button>
-                        {!! dd($errors->all('massage')) !!}
+                        {{$errors->first() }}
                     </div>
                 </div>
             </div>
@@ -46,6 +51,7 @@
                     @include('blog.admin.categories.includes.item_edit_add_col')
                 </div>
             </div>
+        </div>
         </div>
     </form>
 @endsection
